@@ -235,9 +235,11 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     decomposed_Transform = decompose_matrix(local_transform)
                     
                     # local_rotate = get_local_rot(camera)
-                    rotationX = decomposed_Transform[1][0]
-                    rotationY = decomposed_Transform[1][1]
-                    rotationZ = decomposed_Transform[1][2]
+                    rotationX = round(decomposed_Transform[1][0], 1)
+                    rotationY = round(decomposed_Transform[1][1], 1) * -1
+                    rotationZ = round(decomposed_Transform[1][2], 1)
+
+                    label.text = "Old Rotation Y = " + str(rotationY)
 
                     # calculate the new value
                     newRotationY = round(rotationY + self._RotationValue, 1)
@@ -247,7 +249,8 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
 	                    value=Gf.Vec3f(rotationX, newRotationY, rotationZ),
 	                    prev=Gf.Vec3f(rotationX, rotationY, rotationZ))
 
-                    label.text = "New Rotation Y = " + str(newRotationY)
+                    # label.text = "New Rotation Y = " + str(newRotationY)
+
 
                 def YRotateDown_Click():
                     usd_context = omni.usd.get_context()
@@ -262,10 +265,10 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     local_transform: Gf.Matrix4d = xForm.GetLocalTransformation()                    
                     decomposed_Transform = decompose_matrix(local_transform)
                     
-                    # local_rotate = get_local_rot(camera)
-                    rotationX = decomposed_Transform[1][0]
-                    rotationY = decomposed_Transform[1][1]
-                    rotationZ = decomposed_Transform[1][2]
+                   # local_rotate = get_local_rot(camera)
+                    rotationX = round(decomposed_Transform[1][0], 1)
+                    rotationY = round(decomposed_Transform[1][1], 1) * -1
+                    rotationZ = round(decomposed_Transform[1][2], 1)
 
                     # calculate the new value
                     newRotationY = round(rotationY - self._RotationValue, 1)
