@@ -1,18 +1,22 @@
-Camera Keys is an Omniverse Python extension to move the camera around, and set all 6 camera keyframes at the current frame (Transform x,y,z and Rotate x,y,z).
+Camera Keys is an Omniverse Python extension to move the camera around, and set all 6 camera keyframes at the current frame (Transform x,y,z and Rotation x,y,z).
 
 <img src=https://github.com/DataJuggler/SharedRepo/blob/master/Shared/Images/CameraKeysExtension.png width=460 height=320>
 
+To use this extension, you must have a camera named Camera at '/World/Camera'. Future versions may work with multiple cameras.
+
 The extension is designed to help you easiily create camera fly throughs. Move your camera into position either manually, or using the buttons shown above and the transoform keys are set at the current frame.
 
-# A few known issues / features I want to fix.
+Thanks to @mati-codes for writing the camera move forward and helping me with many questions. 
 
-I would like to have Drone like controls for forward, backward, left and right transform and rotate buttons. So far I have not figured out rotation yet.
+Change the frame in the timeline to the desired frame, then move the camera into place and click 'Set Keys' to set the keyframes.
 
-I have not figured out image buttons, but this goes with the drone like controls issue above.
+Use the slider amounts for rotation and movement amount to set how far the camera will move on any of the button clicks.
 
-Sometimes when you make a turn to the left for example, the camera will spin the wrong direction and go the long way. Not sure how to fix this yet.
 
-I will update this read me with more information once I get some questions answered.
+
+
+
+
 
 
 
