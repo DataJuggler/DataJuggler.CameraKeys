@@ -239,7 +239,7 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     rotationY = round(decomposed_Transform[1][1], 1) * -1
                     rotationZ = round(decomposed_Transform[1][2], 1)
 
-                    label.text = "Old Rotation Y = " + str(rotationY)
+                    # label.text = "Old Rotation Y = " + str(rotationY)
 
                     # calculate the new value
                     newRotationY = round(rotationY + self._RotationValue, 1)
@@ -249,7 +249,7 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
 	                    value=Gf.Vec3f(rotationX, newRotationY, rotationZ),
 	                    prev=Gf.Vec3f(rotationX, rotationY, rotationZ))
 
-                    # label.text = "New Rotation Y = " + str(newRotationY)
+                    label.text = "New Rotation Y = " + str(newRotationY)
 
 
                 def YRotateDown_Click():
