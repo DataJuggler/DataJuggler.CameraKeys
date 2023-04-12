@@ -553,7 +553,7 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
 
                     frame = time * fps
                     
-                    label.text = "6 Keys Were Set at frane " + str(frame)
+                    label.text = "6 Keys Were Set at frame " + str(frame)
 
                 # add an IntSlider for translate Strength
                 ui.Label("Camera Rotation Amount")
