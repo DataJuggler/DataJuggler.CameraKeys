@@ -1,4 +1,3 @@
-import typing
 import omni.ext
 import omni.ui as ui
 import omni.timeline
