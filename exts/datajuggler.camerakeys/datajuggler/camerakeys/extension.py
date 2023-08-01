@@ -36,7 +36,7 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
         self._RotationValue = 5
         self._label = None        
 
-        self._window = ui.Window("Camera Keys", width=600, height=420)
+        self._window = ui.Window("Camera Keys", width=600, height=600)
         with self._window.frame:
             with ui.VStack():
                 
@@ -108,7 +108,6 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     translate: Gf.Vec3d = new_transform.ExtractTranslation()
                     # Update the attribute
                     camera.GetAttribute("xformOp:translate").Set(translate)
-
 
                 def Back_Click():
                     
@@ -342,19 +341,15 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     stage = usd_context.get_stage()
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
-                    camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
+                    camera = stage.GetPrimAtPath(camera_path)
 
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
-                    
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]   
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
                     # set the new transofrmX value
                     newTransformX = transformX - self._MovementValue
@@ -374,56 +369,52 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
                     camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
-
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
                     
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]   
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
                     # set the new transofrmX value
                     newTransformX = transformX + self._MovementValue
-
-                    # display the result
+                    
+                    # display the new result
                     label.text = "The Camera object was moved up on the X Axis to " + str(round(newTransformX, 1))
                     
                     # move the camera up
-                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),value=Gf.Vec3d(newTransformX, transformY, transformZ),prev=Gf.Vec3d(transformX, transformY, transformZ))
+                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),
+                        value=Gf.Vec3d(newTransformX, transformY, transformZ),
+                        prev=Gf.Vec3d(transformX, transformY, transformZ))
 
-                
                 def YAxisUp_Click():
 
                     usd_context = omni.usd.get_context()
                     stage = usd_context.get_stage()
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
-                    camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
-
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
+                    camera = stage.GetPrimAtPath(camera_path)                                        
                     
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
-                    # go up x unites where x is the slider value self._MovementValue
-                    newTransformY = transformY + self._MovementValue
+                    # set the new transofrmX value
+                    newTransformY = transformX + self._MovementValue
+                    
+                    # display the new result
+                    label.text = "The Camera object was moved up on the Y Axis to " + str(round(newTransformY, 1))
                     
                     # move the camera up
-                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),value=Gf.Vec3d(transformX, newTransformY, transformZ),prev=Gf.Vec3d(transformX, transformY, transformZ))                 
-                    
-                    label.text = "Camera was moved up"
+                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),
+                        value=Gf.Vec3d(transformX, newTransformY, transformZ),
+                        prev=Gf.Vec3d(transformX, transformY, transformZ))
 
                 def YAxisDown_Click():
 
@@ -431,29 +422,26 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     stage = usd_context.get_stage()
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
-                    camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
-
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
+                    camera = stage.GetPrimAtPath(camera_path)                                        
                     
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]   
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
-                    # go down 10 units
-                    newTransformY = transformY - self._MovementValue
+                    # set the new transofrmX value
+                    newTransformY = transformX - self._MovementValue
+                    
+                    # display the new result
+                    label.text = "The Camera object was moved down on the Y Axis to " + str(round(newTransformY, 1))
                     
                     # move the camera up
                     omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),
                         value=Gf.Vec3d(transformX, newTransformY, transformZ),
-                        prev=Gf.Vec3d(transformX, transformY, transformZ))
-                    
-                    label.text = "Camera Was Moved Down on the Y Axis to " + str(round(newTransformY, 1))                
+                        prev=Gf.Vec3d(transformX, transformY, transformZ))                
 
                 def ZAxisDown_Click():
 
@@ -461,28 +449,26 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     stage = usd_context.get_stage()
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
-                    camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
-
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
+                    camera = stage.GetPrimAtPath(camera_path)                                        
                     
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]   
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
-                    ## set the new transofrmz value
-                    newTransformZ = transformZ - self._MovementValue
+                    # set the new transofrmX value
+                    newTransformZ = transformX - self._MovementValue
                     
                     # display the new result
                     label.text = "The Camera object was moved down on the Z Axis to " + str(round(newTransformZ, 1))
                     
                     # move the camera up
-                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),value=Gf.Vec3d(transformX, transformY, newTransformZ),prev=Gf.Vec3d(transformX, transformY, transformZ))
+                    omni.kit.commands.execute('ChangeProperty',prop_path=Sdf.Path('/World/Camera.xformOp:translate'),
+                        value=Gf.Vec3d(transformX, transformY, newTransformZ),
+                        prev=Gf.Vec3d(transformX, transformY, transformZ))                
                 
                 def ZAxisUp_Click():
 
@@ -490,31 +476,20 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     stage = usd_context.get_stage()
                     active_viewport = get_active_viewport()
                     camera_path = active_viewport.camera_path
-                    camera = stage.GetPrimAtPath(camera_path)                    
-                    timeline = omni.timeline.get_timeline_interface()
-                    current_frame = timeline.get_current_time() * timeline.get_time_codes_per_seconds()
-
-                    pose = omni.usd.utils.get_world_transform_matrix(camera, current_frame)
-                    print("Matrix Form:", pose)
-                    transform = pose.ExtractTranslation()
-
-                    print("Translation: ", transform)
+                    camera = stage.GetPrimAtPath(camera_path)                                        
                     
-                    transformX = transform[0]
-                    transformY = transform[1]
-                    transformZ = transform[2]   
+                    xform = UsdGeom.Xformable(camera)
+                    local_transform: Gf.Matrix4d = xform.GetLocalTransformation()
+                    decomposed_Transform = decompose_matrix(local_transform)
+                   
+                    transformX = round(decomposed_Transform[0][0], 1)
+                    transformY = round(decomposed_Transform[0][1], 1)
+                    transformZ = round(decomposed_Transform[0][2], 1)
 
                     # set the new transofrmX value
-                    newTransformZ = transformZ + self._MovementValue
-
-                    # q = pose.ExtractRotation().GetQuaternion()
-
-                    # rawX = q.GetImaginary()[0] * 360 / math.pi
-
-                    # rotationX = round(rawX, 1)
-                    # rotationY = q.GetImaginary()[1] * 180 / math.pi
-                    # rotationZ = q.GetImaginary()[2] * 180 / math.pi
+                    newTransformZ = transformX + self._MovementValue
                     
+                    # display the new result
                     label.text = "The Camera object was moved up on the Z Axis to " + str(round(newTransformZ, 1))
                     
                     # move the camera up
@@ -523,7 +498,6 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                         prev=Gf.Vec3d(transformX, transformY, transformZ))
 
                 def SetKeys_Click():
-
                     
                     omni.kit.commands.execute('SetAnimCurveKeys',
                         paths=['/World/Camera.xformOp:translate|x'])
@@ -543,7 +517,6 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                     omni.kit.commands.execute('SetAnimCurveKeys',
                         paths=['/World/Camera.xformOp:rotateYXZ|z'])
 
-
                     timeline = omni.timeline.get_timeline_interface()
                     
                     time = timeline.get_current_time()
@@ -561,12 +534,12 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                 self._rotationValue = 5
                 self._rotationSlider.model.add_value_changed_fn(self._onrotation_value_changed)
 
-                with ui.HStack():                    
+                with ui.HStack(height=40):                    
                     xAxisButtonUp = ui.Button("X +", clicked_fn=XRotateUp_Click)
                     yAxisButtonUp = ui.Button("Y +", clicked_fn=YRotateUp_Click)
                     zAxisButtonUp = ui.Button("Z +", clicked_fn=ZRotateUp_Click)  
 
-                with ui.HStack():
+                with ui.HStack(height=40):
                     xAxisButtonDown = ui.Button("X -", clicked_fn=XRotateDown_Click)
                     yAxisButtonDown = ui.Button("Y -", clicked_fn=YRotateDown_Click)
                     zAxisButtonDown = ui.Button("Z -", clicked_fn=ZRotateDown_Click)                     
@@ -578,24 +551,34 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                 self._MovementValue = 100
                 self._movementSlider.model.add_value_changed_fn(self._on_value_changed)
 
-                with ui.HStack():
+                with ui.HStack(height=60):
                     leftButton = ui.Button("Left", clicked_fn=Left_Click)
                     forwardButton = ui.Button("Forward", clicked_fn=Forward_Click)
                     yAxisButtonUp = ui.Button("Back", clicked_fn=Back_Click)
                     rightButton = ui.Button("Right", clicked_fn=Right_Click)
 
-                with ui.HStack():
+                with ui.HStack(height=60):
                     xAxisButtonUp = ui.Button("X +", clicked_fn=XAxisUp_Click)
                     yAxisButtonUp = ui.Button("Y +", clicked_fn=YAxisUp_Click)
                     zAxisButtonUp = ui.Button("Z +", clicked_fn=ZAxisUp_Click)
 
-                with ui.HStack():
+                with ui.HStack(height=60):
                     xAxisButtonDown = ui.Button("X -", clicked_fn=XAxisDown_Click)
                     yAxisButtonDown = ui.Button("Y -", clicked_fn=YAxisDown_Click)
                     zAxisButtonDown = ui.Button("Z -", clicked_fn=ZAxisDown_Click)   
-                    
-                ui.Label("Change the timeline to the desired frame before clicking the Set Keys button.")
-                ui.Button("Set Keys", clicked_fn=SetKeys_Click)
+
+                # with ui.VStack(height=54):
+                #    ui.Label("Shaky Cam Movement Amount - Only Applies To Forward")
+                #    # add an IntSlider for translate Strength                
+                #    self._ShakySlider = ui.IntSlider(min = 1, max = 100, step=1)
+                #    self._ShakySlider.model.set_value(0)
+                #    self._ShakyValue = 0
+                #    self._ShakySlider.model.add_value_changed_fn(self._on_shakyvalue_changed)
+
+                with ui.VStack(height=86):
+                    ui.Label("")                   
+                    ui.Label("Change the timeline to the desired frame before clicking the Set Keys button.")
+                    ui.Button("Set Keys", clicked_fn=SetKeys_Click)
                 
     def _on_value_changed(self, model: ui.SimpleIntModel):
 
@@ -606,6 +589,11 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
 
         self._RotationValue = model.get_value_as_int()
         self._label.text = "Camera rotation value = " + str(self._Rotation_Value)
+
+    #def _on_shakyvalue_changed(self, model: ui.SimpleIntModel):
+
+    #    self._ShakyValue =  model.get_value_as_int()
+    #    self._label.text = "Camera shaky value = " + str(self._Shaky_Value)
 
     def on_shutdown(self):
         print("[datajuggler.camerakeys] datajuggler camerakeys shutdown")
