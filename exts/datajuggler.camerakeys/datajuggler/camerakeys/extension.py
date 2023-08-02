@@ -36,7 +36,7 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
         self._RotationValue = 5
         self._label = None        
 
-        self._window = ui.Window("Camera Keys", width=600, height=600)
+        self._window = ui.Window("Camera Keys", width=600, height=660)
         with self._window.frame:
             with ui.VStack():
                 
@@ -551,18 +551,18 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                 self._MovementValue = 100
                 self._movementSlider.model.add_value_changed_fn(self._on_value_changed)
 
-                with ui.HStack(height=60):
+                with ui.HStack(height=54):
                     leftButton = ui.Button("Left", clicked_fn=Left_Click)
                     forwardButton = ui.Button("Forward", clicked_fn=Forward_Click)
                     yAxisButtonUp = ui.Button("Back", clicked_fn=Back_Click)
                     rightButton = ui.Button("Right", clicked_fn=Right_Click)
 
-                with ui.HStack(height=60):
+                with ui.HStack(height=54):
                     xAxisButtonUp = ui.Button("X +", clicked_fn=XAxisUp_Click)
                     yAxisButtonUp = ui.Button("Y +", clicked_fn=YAxisUp_Click)
                     zAxisButtonUp = ui.Button("Z +", clicked_fn=ZAxisUp_Click)
 
-                with ui.HStack(height=60):
+                with ui.HStack(height=54):
                     xAxisButtonDown = ui.Button("X -", clicked_fn=XAxisDown_Click)
                     yAxisButtonDown = ui.Button("Y -", clicked_fn=YAxisDown_Click)
                     zAxisButtonDown = ui.Button("Z -", clicked_fn=ZAxisDown_Click)   
@@ -575,9 +575,11 @@ class DatajugglerCamerakeysExtension(omni.ext.IExt):
                 #    self._ShakyValue = 0
                 #    self._ShakySlider.model.add_value_changed_fn(self._on_shakyvalue_changed)
 
-                with ui.VStack(height=86):
+                with ui.VStack(height=40):
                     ui.Label("")                   
                     ui.Label("Change the timeline to the desired frame before clicking the Set Keys button.")
+                
+                with ui.VStack(height=60):
                     ui.Button("Set Keys", clicked_fn=SetKeys_Click)
                 
     def _on_value_changed(self, model: ui.SimpleIntModel):
