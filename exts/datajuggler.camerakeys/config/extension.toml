@@ -1,6 +1,6 @@
 [package]
 # Semantic Versioning is used: https://semver.org/
-version = "1.1.1"
+version = "1.1.2"
 
 # Lists people or organizations that are considered the "authors" of the package.
 authors = ["DataJuggler"]
@@ -13,13 +13,13 @@ description="A simple python extension example to use as a starting point for yo
 readme  = "docs/README.md"
 
 # URL of the extension source repository.
-repository = ""
+repository = "https://github.com/DataJuggler/DataJuggler.CameraKeys"
 
 # One of categories for UI.
-category = "Example"
+category = "Cameras"
 
 # Keywords for the extension
-keywords = ["kit", "example"]
+keywords = ["kit", "cameras"]
 
 # Location of change log file in target (final) folder of extension, relative to the root.
 # More info on writing changelog: https://keepachangelog.com/en/1.0.0/
